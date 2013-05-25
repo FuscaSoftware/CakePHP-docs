@@ -27,13 +27,12 @@ app/Config/bootstrap.php.
 
 You can either load them one by one or all of them in a single call::
 
-    <?php
     CakePlugin::loadAll(); // Loads all plugins at once
     CakePlugin::load('ContactManager'); //Loads a single plugin
 
 
 loadAll loads all plugins available, while allowing you to set certain
-settings for specific plugins. load() works similarly, but only loads the 
+settings for specific plugins. ``load()`` works similarly, but only loads the 
 plugins you explicitly specify.
 
 Plugin configuration
@@ -46,7 +45,6 @@ certain plugins.
 
 No problem::
 
-    <?php
     CakePlugin::loadAll(array(
         'Blog' => array('routes' => true),
         'ContactManager' => array('bootstrap' => true),
@@ -64,7 +62,6 @@ every plugin that doesn't have a more specific configuration.
 
 Load the bootstrap file from all plugins, and the routes from the Blog plugin::
     
-    <?php
     CakePlugin::loadAll(array(
         array('bootstrap' => true),
         'Blog' => array('routes' => true)
@@ -79,7 +76,7 @@ Some plugins additionally need to create one or more tables in your database. In
 those cases, they will often include a schema file which you can
 call from the cake shell like this::
 
-    user@host$ cake schema create -plugin ContactManager
+    user@host$ cake schema create --plugin ContactManager
 
 Most plugins will indicate the proper procedure for configuring
 them and setting up the database in their documentation. Some
@@ -91,7 +88,6 @@ Advanced bootstrapping
 If you like to load more than one bootstrap file for a plugin. You can specify
 an array of files for the bootstrap configuration key::
 
-    <?php
     CakePlugin::loadAll(array(
         'Blog' => array(
             'bootstrap' => array(
@@ -104,7 +100,6 @@ an array of files for the bootstrap configuration key::
 You can also specify a callable function that needs to be called when the plugin
 has been loaded::
 
-    <?php
 
     function aCallableFunction($pluginName, $config) {
         
@@ -128,13 +123,11 @@ ContactInfoHelper to output some pretty contact information in
 one of your views. In your controller, your $helpers array
 could look like this::
 
-    <?php
     public $helpers = array('ContactManager.ContactInfo');
 
 You would then be able to access the ContactInfoHelper just like
 any other helper in your view, such as::
 
-    <?php
     echo $this->ContactInfo->address($contact);
 
 
@@ -178,14 +171,12 @@ application can, such as Config, Console, Lib, webroot, etc.
 
 ::
 
-    <?php
     // /app/Plugin/ContactManager/Controller/ContactManagerAppController.php:
     class ContactManagerAppController extends AppController {
     }
 
 ::
 
-    <?php
     // /app/Plugin/ContactManager/Model/ContactManagerAppModel.php:
     class ContactManagerAppModel extends AppModel {
     }
@@ -221,7 +212,6 @@ this plugin.
 So, we place our new ContactsController in
 /app/Plugin/ContactManager/Controller and it looks like so::
 
-    <?php
     // app/Plugin/ContactManager/Controller/ContactsController.php
     class ContactsController extends ContactManagerAppController {
         public $uses = array('ContactManager.Contact');
@@ -259,7 +249,6 @@ Models for the plugin are stored in /app/Plugin/ContactManager/Model.
 We've already defined a ContactsController for this plugin, so let's 
 create the model for that controller, called Contact::
 
-    <?php
     // /app/Plugin/ContactManager/Model/Contact.php:
     class Contact extends ContactManagerAppModel {
     }
@@ -275,7 +264,6 @@ Let’s create that next.
 
 For example::
 
-    <?php
     // /app/Plugin/ContactManager/Model/Contact.php:
     class Contact extends ContactManagerAppModel {
         public $hasMany = array('ContactManager.AltName');
@@ -284,14 +272,13 @@ For example::
 If you would prefer that the array keys for the association not
 have the plugin prefix on them, use the alternative syntax::
 
-    <?php
     // /app/Plugin/ContactManager/Model/Contact.php:
     class Contact extends ContactManagerAppModel {
-            public $hasMany = array(
-                    'AltName' => array(
-                            'className' => 'ContactManager.AltName'
-                    )
-            );
+        public $hasMany = array(
+            'AltName' => array(
+                'className' => 'ContactManager.AltName'
+            )
+        );
     }
 
 Plugin Views
@@ -348,6 +335,12 @@ You may put any type of file in any directory, just like a regular
 webroot. The only restriction is that ``MediaView`` needs to know 
 the mime-type of that asset.
 
+But keep in mind that handling static assets, such as images, Javascript
+and CSS files of plugins, through the Dispatcher is incredibly inefficient.
+It is strongly recommended to symlink them for production.
+For example like this::
+
+    ln -s app/Plugin/YourPlugin/webroot/css/yourplugin.css app/webroot/css/yourplugin.css
 
 Linking to assets in plugins
 ----------------------------
@@ -364,6 +357,10 @@ would serve the asset
 
     It is important to note the **/your_plugin/** prefix before the
     asset path. That makes the magic happen!
+
+.. versionchanged:: 2.1
+    Use :term:`plugin syntax` to request assets. For example in your View:
+    <?php echo $this->Html->css("ContactManager.style"); ?>
 
 
 Components, Helpers and Behaviors
@@ -382,7 +379,6 @@ Referring to your component from inside or outside of your plugin
 requires only that you prefix the plugin name before the name of the
 component. For example::
 
-    <?php
     // Component defined in 'ContactManager' plugin
     class ExampleComponent extends Component {
     }
@@ -397,7 +393,6 @@ The same technique applies to Helpers and Behaviors.
     When creating Helpers you may find AppHelper is not automatically 
     available. You should declare the resources you need with Uses::
     
-        <?php
         // Declare use of AppHelper for your Plugin's Helper
         App::uses('AppHelper', 'View/Helper');
 

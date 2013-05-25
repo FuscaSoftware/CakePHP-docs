@@ -38,7 +38,6 @@ app/config/bootstrap.php に、 ``$pluginPaths`` や ``$controllerPaths`` のよ
 
 ::
 
-    <?php
     App::build(array(
         'plugins' => array('/full/path/to/plugins/', '/next/full/path/to/plugins/'),
         'models' =>  array('/full/path/to/models/', '/next/full/path/to/models/'),
@@ -66,7 +65,6 @@ app/config/bootstrap.php に、 ``$pluginPaths`` や ``$controllerPaths`` のよ
 
 ::
 
-    <?php
     Inflector::rules('singular', array(
         'rules' => array('/^(bil)er$/i' => '\1', '/^(inflec|contribu)tors$/i' => '\1ta'),
         'uninflected' => array('singulars'),
@@ -83,28 +81,28 @@ app/config/bootstrap.php に、 ``$pluginPaths`` や ``$controllerPaths`` のよ
 ファイル名と含まれるメインクラスのマッピングのため、「libs/session.php」、「libs/socket.php」、「libs/model/schema.php」、「libs/model/behavior.php」のコアライブラリは名前が変更されています。:
 
 
--  session.php ⇒ cake\_session.php
+-  session.php -> cake\_session.php
 
   
-   -  App::import('Core', 'Session') ⇒ App::import('Core',
+   -  App::import('Core', 'Session') -> App::import('Core',
       'CakeSession')
 
--  socket.php ⇒ cake\_socket.php
+-  socket.php -> cake\_socket.php
 
   
-   -  App::import('Core', 'Socket') ⇒ App::import('Core',
+   -  App::import('Core', 'Socket') -> App::import('Core',
       'CakeSocket')
 
--  schema.php ⇒ cake\_schema.php
+-  schema.php -> cake\_schema.php
 
   
-   -  App::import('Model', 'Schema') ⇒ App::import('Model',
+   -  App::import('Model', 'Schema') -> App::import('Model',
       'CakeSchema')
 
--  behavior.php ⇒ model\_behavior.php
+-  behavior.php -> model\_behavior.php
 
   
-   -  App::import('Core', 'Behavior') ⇒ App::import('Core',
+   -  App::import('Core', 'Behavior') -> App::import('Core',
       'ModelBehavior')
 
 
@@ -193,7 +191,6 @@ Sessionヘルパーと Sessionコンポーネントは他のコンポーネン�
 
 ::
 
-    <?php
     var $components = array('Session', 'Auth', ...);
     var $helpers = array('Session', 'Html', 'Form' ...);
 
@@ -246,7 +243,6 @@ Sessionヘルパーと Sessionコンポーネントは他のコンポーネン�
 
 ::
 
-    <?php
     // このような書き方から:
     Configure::write('Routing.admin', 'admin');
    
@@ -259,7 +255,6 @@ prefixルートの更なる情報に関しては、新機能ガイドを見て�
 
 ::
 
-    <?php
     Router::connect('/:$%@#param/:action/*', array(...)); // ダメ
     Router::connect('/:can/:anybody/:see/:m-3/*', array(...)); // 許容可能
 
@@ -269,7 +264,6 @@ prefixルートの更なる情報に関しては、新機能ガイドを見て�
 
 ::
 
-    <?php
     Router::connect('/([0-9]+)-p-(.*)/', array('controller' => 'products', 'action' => 'show'));
 
 これらのルートは複雑なルートを悪化させ、リバースルーティングを不可能にします。
@@ -278,7 +272,6 @@ prefixルートの更なる情報に関しては、新機能ガイドを見て�
 
 ::
 
-    <?php
     Router::connect(
         '/pages/*/:event',
         array('controller' => 'pages', 'action' => 'display'),
@@ -293,7 +286,6 @@ prefixルートの更なる情報に関しては、新機能ガイドを見て�
 
 ::
 
-    <?php
     // 古いフォーマット:
     $url = array('controller' => 'posts', 'action' => 'view', 'id' => $id);
     // ユースケース:
@@ -407,7 +399,6 @@ Cacheはエンジン毎のシングルトンの使用をやめ、代わりに ``
 
 ::
 
-    <?php
     echo $this->element('sql_dump'); ?>
 
 このエレメントはレイアウトやビューのどこにでも置けます。
@@ -492,6 +483,7 @@ passedArgs が「url」オプションに自動的にマージされるように
 
 -  ``HtmlHelper::meta()`` の ``$inline`` 引数は削除されました。これは ``$options`` 配列にマージされました。
 -  ``HtmlHelper::link()`` の ``$escapeTitle`` 引数は削除されました。代わりに ``$options['escape']`` を使用してください。
+   ``escape`` オプションはタイトルと属性をエスケープするかどうかを同時に設定します。
 -  ``HtmlHelper::para()`` の ``$escape`` 引数は削除されました。代わりに ``$options['escape']`` を使用してください。
 -  ``HtmlHelper::div()`` の ``$escape`` 引数は削除されました。代わりに ``$options['escape']`` を使用してください。
 -  ``HtmlHelper::tag()`` の ``$escape`` 引数は削除されました。代わりに ``$options['escape']`` を使用してください。

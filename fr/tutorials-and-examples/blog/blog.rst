@@ -9,16 +9,16 @@ plus agréable : nous espérons que vous le découvrirez au fur et à mesure que
 vous plongerez dans le code.
 
 Ce tutoriel vous accompagnera à travers la création d'une simple application 
-de blog. Nous récupérons et installerons Cake, créerons et configurons une base 
-de données et ajouterons suffisamment de logique applicative pour lister, 
+de blog. Nous récupérerons et installerons Cake, créerons et configurerons une 
+base de données et ajouterons suffisamment de logique applicative pour lister, 
 ajouter, éditer et supprimer des posts.
 
 Voici ce dont vous aurez besoin :
 
 
-#. Un serveur web fonctionnel. Nous supposerons que vous utiliser Apache,
+#. Un serveur web fonctionnel. Nous supposerons que vous utilisez Apache,
    bien que les instructions pour utiliser d'autres serveurs devraient
-   être très semblable. Nous aurons peut-être besoin de jouer un peu sur la
+   être très semblables. Nous aurons peut-être besoin de jouer un peu sur la
    configuration du serveur, mais la plupart des personnes peuvent faire 
    fonctionner Cake sans aucune configuration préalable.
 #. Un serveur de base de données. Dans ce tutoriel, nous utiliserons MySQL. 
@@ -29,7 +29,7 @@ Voici ce dont vous aurez besoin :
    si vous êtes adepte de la programmation procédurale.
 #. Enfin, vous aurez besoin de connaissances de base à propos du motif de 
    conception MVC. Un bref aperçu de ce motif dans le chapitre 
-   "Débuter avec CakePHP", section : "Comprendre le modèle M-V-C".
+   :doc:`/cakephp-overview/understanding-model-view-controller`.
    Ne vous inquiétez pas : il n'y a qu'une demi-page de lecture.
 
 Maintenant, lançons-nous !
@@ -40,7 +40,7 @@ Obtenir Cake
 Tout d'abord, récupérons une copie récente de Cake.
 
 Pour obtenir la dernière version, allez sur le site GitHub du projet CakePHP :
-`http://github.com/cakephp/cakephp/downloads <http://github.com/cakephp/cakephp/downloads>`_
+`https://github.com/cakephp/cakephp/tags <https://github.com/cakephp/cakephp/tags>`_
 et téléchargez la dernière version de la 2.0
 
 Vous pouvez aussi cloner le dépôt en utilisant
@@ -114,7 +114,7 @@ Configurer la base de données Cake
 ==================================
 
 En avant : indiquons à Cake où se trouve notre base de données et comment s'y 
-connecter. Pour la plupart d'entre vous, c'est première et dernière fois que 
+connecter. Pour la plupart d'entre vous, c'est la première et dernière fois que 
 vous configurerez quelque chose.
 
 Une copie du fichier de configuration Cake pour la base de données se trouve 
@@ -128,7 +128,6 @@ ressembler à ce qui suit :
 
 ::
 
-    <?php
     public $default = array(
         'datasource' => 'Database/Mysql',
         'persistent' => false,
@@ -165,7 +164,6 @@ difficile à deviner.
 
 ::
 
-    <?php
     /**
      * Une chaîne aléatoire utilisée dans les méthodes de hachage sécurisées.
      */
@@ -178,86 +176,39 @@ d'importance du moment qu'elle est difficile à deviner.
 
 ::
 
-    <?php
     /**
      * Une chaîne aléatoire de chiffre utilisée pour le chiffrage/déchiffrage 
      * des chaînes de caractères.
      */
     Configure::write('Security.cipherSeed', '7485712659625147843639846751');
 
-La dernière étape consiste à le dossier ``/app/tmp`` accessible en écriture. 
-Le meilleur moyen de faire cela est trouver sous quel utilisateur votre 
-serveur web s'exécute (``<?php echo `whoami`; ?>``) et de modifier le 
+La dernière étape consiste à rendre le dossier ``/app/tmp`` accessible en 
+écriture. Le meilleur moyen de faire cela est trouver sous quel utilisateur 
+votre serveur web s'exécute (``<?php echo `quisuisje`; ?>``) et de modifier le 
 propriétaire du dossier ``/app/tmp`` pour cet utilisateur. La commande à 
 exécuter (sous \*nix) devrait resembler à quelque chose comme ça ::
 
     $ chown -R www-data app/tmp
 
-Si pour une raison quelquonque CakePHP ne peut pas écrire dans ce répertoire, 
+Si pour une raison quelconque CakePHP ne peut pas écrire dans ce répertoire, 
 vous en serez informé par un message d'avertissement tant que vous n'êtes pas 
 en mode production.
 
 Une note sur mod\_rewrite
 =========================
 
-De temps en temps, un nouvel utilisateur rencontrera des problèmes avec 
-mod_rewrite, je vais donc les mentionner ici en marge. Si le page d'accueil 
-de CakePHP vous semble un peu singulière (pas d'images ou de style CSS), cela 
-signifie probablement que mod\_rewrite n'est pas activé sur votre système. 
-Voici quelques conseils pour vous aider à le faire fonctionner :
+Occasionnellement, un nouvel utilisateur peut avoir des problèmes de  
+mod\_rewrite. par exemple si la page d'accueil de CakePHP a l'air marrante 
+(pas d'images ou de styles css), cela signifie probablement que 
+mod\_rewrite ne fonctionne pas sur votre système. Merci de vous référer 
+à l'une des sections suivantes sur l'url rewriting pour que votre serveur 
+web fonctionne:
 
-#. Assurez-vous qu'une neutralisation (override) .htaccess est permise : dans 
-   votre fichier httpd.conf, vous devriez avoir une rubrique qui définit une 
-   section pour chaque répertoire de votre serveur. Vérifiez que 
-   ``AllowOverride`` est défini à ``All`` pour le bon répertoire. Pour des 
-   raisons de sécurité et de performance, *ne définissez pas* ``AllowOverride`` 
-   à ``All`` dans ``<Directory />``. A la place, recherchez le bloc 
-   ``Directory>`` qui correspond au dossier de votre site web.
+.. toctree::
 
-#. Assurez-vous que vous éditer le bon httpd.conf et non celui d'un utilisateur 
-   ou d'un site spécifique.
+    /installation/url-rewriting
 
-#. Pour une raison ou une autre, vous avez peut être téléchargé une copie de 
-   CakePHP sans les fichiers .htaccess nécessaires. Cela arrive parfois car 
-   certains systèmes d'exploitation masquent les fichiers qui commencent par 
-   '.' et ne les copient pas. Assurez vous que votre copie de CakePHP provient 
-   de la section téléchargements du site ou de GitHub.
-
-#. Assurez-vous qu'Apache charge correctement le mod_rewrite ! Vous devriez 
-   voir quelque chose comme ::
-
-       LoadModule rewrite_module             libexec/httpd/mod_rewrite.so
-
-   ou (pour Apache 1.3)::
-
-       AddModule             mod_rewrite.c
-
-   dans votre httpd.conf.
-
-
-Si vous ne voulez pas ou ne pouvez pas faire fonctionner le mod_rewrite 
-(ou tout autre module compatible) sur votre serveur, vous devrez utiliser les 
-"URLs enjolivées" intégrées à Cake. Dans ``/app/config/core.php``, décommentez 
-la ligne qui ressemble à cela ::
-
-    Configure::write('App.baseUrl', env('SCRIPT_NAME'));
-
-Supprimez également ces fichiers .htaccess ::
-
-    /.htaccess
-    /app/.htaccess
-    /app/webroot/.htaccess
-
-
-Vos URLs seront ainsi transformées en : 
-www.example.com/index.php/controllername/actionname/param plutôt que 
-www.example.com/controllername/actionname/param.
-
-Si vous installez CakePHP sur un serveur web autre que Apache, vous trouverez 
-les instructions pour obtenir des "URLs enjolivées" avec d'autres serveurs 
-dans le chapitre :doc:`/installation/advanced-installation`
-
-Continuez sur :doc:`/tutorials-and-examples/blog/part-two` pour commencer à 
+Maintenant continuez sur :doc:`/tutorials-and-examples/blog/part-two` pour commencer à 
 construire votre première application CakePHP.
 
 

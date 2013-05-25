@@ -28,7 +28,7 @@ needed paths to $PATH. Copy and save this to your Console folder as
     done
     $cmd
 
-You can call it like:::
+You can call it like::
 
     $ ./Console/cakeshell myshell myparam -cli /usr/bin -console /cakes/2.x.x/lib/Cake/Console
 
@@ -45,7 +45,7 @@ A simple trick to debug a crontab is to set it up to dump it's
 output to a logfile. You can do this like::
 
     # m h dom mon dow command
-    */5 *   *   *   * /full/path/to/cakeshell myshell myparam -cli /usr/bin -console /cakes/2.x.x/lib/Cake/Console -app /full/path/to/app >> /path/to/log/file.log
+    */5 *   *   *   * /full/path/to/cakeshell myshell myparam -cli /usr/bin -console /cakes/2.x.x/lib/Cake/Console -app /full/path/to/app >> /path/to/log/file.log 2>&1
 
 
 .. meta::

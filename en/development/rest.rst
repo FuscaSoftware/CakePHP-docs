@@ -25,7 +25,6 @@ and other routes which would override the routes.
 If we wanted to allow REST access to a recipe database, we'd do
 something like this::
 
-    <?php
     //In app/Config/routes.php...
     
     Router::mapResources('recipes');
@@ -70,7 +69,6 @@ controller actions, we can move on to creating the logic in our
 controller actions. A basic controller might look something like
 this::
 
-    <?php
     // Controller/RecipesController.php
     class RecipesController extends AppController {
     
@@ -80,7 +78,7 @@ this::
             $recipes = $this->Recipe->find('all');
             $this->set(array(
                 'recipes' => $recipes,
-                '_serialize' => array('recipe')
+                '_serialize' => array('recipes')
             ));
         }
     
@@ -134,7 +132,6 @@ the :php:class:`Xml` for quick-and-easy XML output in those views. Here's what
 our index view might look like::
 
     // app/View/Recipes/xml/index.ctp
-    <?php
     // Do some formatting and manipulation on
     // the $recipes array.
     $xml = Xml::fromArray(array('response' => $recipes));
@@ -191,7 +188,6 @@ using :php:meth:`Router::resourceMap()`.  This method allows you to set the
 default routes that get set with :php:meth:`Router::mapResources()`.  When using
 this method you need to set *all* the defaults you want to use::
 
-    <?php
     Router::resourceMap(array(
         array('action' => 'index', 'method' => 'GET', 'id' => false),
         array('action' => 'view', 'method' => 'GET', 'id' => true),
@@ -211,28 +207,7 @@ Custom REST Routing
 If the default routes created by :php:meth:`Router::mapResources()` don't work
 for you, use the :php:meth:`Router::connect()` method to define a custom set of
 REST routes. The ``connect()`` method allows you to define a number of different
-options for a given URL. The first parameter is the URL itself, and the second
-parameter allows you to supply those options. The third parameter allows you to
-specify regex patterns to help CakePHP identify certain markers in the specified
-URL.
-
-We'll provide a simple example here, and allow you to tailor this
-route for your other RESTful purposes. Here's what our edit REST
-route would look like, without using :php:meth:`Router::mapResources()`::
-
-    <?php
-    Router::connect(
-        "/:controller/:id",
-        array("action" => "edit", "[method]" => "PUT"),
-        array("id" => "[0-9]+")
-    );
-
-Advanced routing techniques are covered elsewhere, so we'll focus
-on the most important point for our purposes here: the [method] key
-of the options array in the second parameter. Once that key has
-been set, the specified route works only for that HTTP request
-method (which could also be GET, DELETE, etc.)
-
+options for a given URL. See the section on :ref:`route-conditions` for more information.
 
 .. meta::
     :title lang=en: REST

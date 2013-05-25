@@ -103,16 +103,35 @@ fork::
 
     git push origin <branch-name>
 
-Once your branch is on github, you can discuss it on the 
+Once your branch is on github, you can discuss it on the
 `cakephp-core <http://groups.google.com/group/cakephp-core>`_ mailing list or
-submit a pull request on github.
+submit a pull request on github. 
+
+Choosing where your changes will be merged into
+-----------------------------------------------
+
+When making pull requests you should make sure you select the correct base
+branch, as you cannot edit it once the pull request is created.
+
+* If your change is a **bugfix** and doesn't introduce new functionality and only
+  corrects existing behavior that is present in the current release.  Then
+  choose **master** as your merge target.
+* If your change is a **new feature** or an addition to the framework, then you
+  should choose the branch with the next version number.  For example if the
+  current stable release is ``2.2.2``, the branch accepting new features will be
+  ``2.3``
+* If your change is a breaks existing functionality, or API's then you'll have
+  to choose then next major release.  For example, if the current release is
+  ``2.2.2`` then the next time existing behavior can be broken will be in
+  ``3.0`` so you should target that branch.
+
 
 .. note::
 
     Remember that all code you contribute to CakePHP will be licensed under the
-    MIT License, and the Cake Software Foundation will become the owner of any
-    contributed code and all contributed code is subject to the `Contributors
-    license agreement <http://cakefoundation.org/pages/cla>`_.
+    MIT License, and the `Cake Software Foundation <http://cakefoundation.org/pages/about>`_
+    will become the owner of any contributed code and all contributed code is
+    subject to the `Contributors license agreement <http://cakefoundation.org/pages/cla>`_.
 
 All bug fixes merged into a maintenance branch will also be merged into upcoming
 releases periodically by the core team.

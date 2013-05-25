@@ -31,8 +31,8 @@ strings in :php:func:`__()` like so::
 
 If you do nothing further, these two code examples are functionally
 identical - they will both send the same content to the browser.
-The :php:func:`__()` function will translate the passed string 
-if a translation is available, or return it unmodified. It works similar 
+The :php:func:`__()` function will translate the passed string
+if a translation is available, or return it unmodified. It works similar
 to other `Gettext <http://en.wikipedia.org/wiki/Gettext>`_ implementations
 (as do the other translate functions, such as
 :php:func:`__d()` , :php:func:`__n()` etc)
@@ -58,9 +58,9 @@ location::
 The default domain is 'default', therefore your locale folder would
 look something like this::
 
-    /app/Locale/eng/LC_MESSAGES/default.po (English)   
-    /app/Locale/fre/LC_MESSAGES/default.po (French)   
-    /app/Locale/por/LC_MESSAGES/default.po (Portuguese) 
+    /app/Locale/eng/LC_MESSAGES/default.po (English)
+    /app/Locale/fra/LC_MESSAGES/default.po (French)
+    /app/Locale/por/LC_MESSAGES/default.po (Portuguese)
 
 To create or edit your po files it's recommended that you do *not*
 use your favorite editor. To create a po file for the first time it
@@ -82,19 +82,17 @@ Remember that po files are useful for short messages, if you find
 you want to translate long paragraphs, or even whole pages - you
 should consider implementing a different solution. e.g.::
 
-    <?php
     // App Controller Code.
     public function beforeFilter() {
         $locale = Configure::read('Config.language');
         if ($locale && file_exists(VIEWS . $locale . DS . $this->viewPath)) {
-            // e.g. use /app/View/fre/Pages/tos.ctp instead of /app/View/Pages/tos.ctp
+            // e.g. use /app/View/fra/Pages/tos.ctp instead of /app/View/Pages/tos.ctp
             $this->viewPath = $locale . DS . $this->viewPath;
         }
     }
 
 or::
 
-    <?php
     // View code
     echo $this->element(Configure::read('Config.language') . '/tos');
 
@@ -104,10 +102,9 @@ Internationalizing CakePHP Plugins
 If you want to include translation files within your application you'll need to
 follow a few conventions.
 
-Instead of __() and __n() you will have to use __d() and __dn(). The D means 
+Instead of __() and __n() you will have to use __d() and __dn(). The D means
 domain. So if you have a plugin called 'DebugKit' you would have to do this::
 
-    <?php
     __d('debug_kit', 'My example text');
 
 Using the underscored syntax is important, if you don't use it CakePHP won't
@@ -119,9 +116,9 @@ Your translation file for this example should go into::
 
 And for other languages than the default::
 
-    /app/Plugin/DebugKit/Locale/eng/LC_MESSAGES/debug_kit.po (English)   
-    /app/Plugin/DebugKit/Locale/fre/LC_MESSAGES/debug_kit.po (French)   
-    /app/Plugin/DebugKit/Locale/por/LC_MESSAGES/debug_kit.po (Portuguese) 
+    /app/Plugin/DebugKit/Locale/eng/LC_MESSAGES/debug_kit.po (English)
+    /app/Plugin/DebugKit/Locale/fra/LC_MESSAGES/debug_kit.po (French)
+    /app/Plugin/DebugKit/Locale/por/LC_MESSAGES/debug_kit.po (Portuguese)
 
 The reason for that is that CakePHP will use the lower cased and underscored
 plugin name to compare it to the translation domain and is going to look into
@@ -133,8 +130,7 @@ Localization in CakePHP
 To change or set the language for your application, all you need to
 do is the following::
 
-    <?php
-    Configure::write('Config.language', 'fre');
+    Configure::write('Config.language', 'fra');
 
 This tells Cake which locale to use (if you use a regional locale, such as
 fr\_FR, it will use the `ISO 639-2
@@ -146,16 +142,16 @@ in fact anytime at all before you want a message in a different language.  To
 set the language for the current user, you can store the setting in the Session
 object, like this::
 
-    <?php
-    $this->Session->write('Config.language', 'fre');
+    $this->Session->write('Config.language', 'fra');
 
-At the beginning of each request in your controller's ``beforeFilter`` you 
+At the beginning of each request in your controller's ``beforeFilter`` you
 should configure ``Configure`` as well::
 
-    <?php
     class AppController extends Controller {
         public function beforeFilter() {
-            Configure::write('Config.language', $this->Session->read('Config.language'));
+            if ($this->Session->check('Config.language')) {
+                Configure::write('Config.language', $this->Session->read('Config.language'));
+            }
         }
     }
 
@@ -198,7 +194,6 @@ CakePHP will automatically extract the validation error when you are using the
 :doc:`i18n console task </console-and-shells>`. By default, the default domain is used.
 This can be overwritten by setting the ``$validationDomain`` property in your model::
 
-    <?php
     class User extends AppModel {
 
         public $validationDomain = 'validation_errors';
@@ -207,7 +202,6 @@ This can be overwritten by setting the ``$validationDomain`` property in your mo
 Additional parameters defined in the validation rule are passed to the translation
 function. This allows you to create dynamic validation messages::
 
-    <?php
     class User extends AppModel {
 
         public $validationDomain = 'validation';
@@ -224,7 +218,6 @@ function. This allows you to create dynamic validation messages::
 
 Which will do the following internal call::
 
-    <?php
     __d('validation', 'Username should be between %d and %d characters', array(2, 10));
 
 .. meta::

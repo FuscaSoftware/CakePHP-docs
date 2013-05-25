@@ -28,7 +28,6 @@
 :doc:`/core-libraries/components/email` などにあります。これらのコンポーネントと普通のコンポーネントの設定は大抵の場合、
 ``$components`` 配列かコントローラの ``beforeFilter()`` メソッドで行われます。::
 
-    <?php
     class PostsController extends AppController {
         public $components = array(
             'Auth' => array(
@@ -42,7 +41,6 @@
 さらに、コントローラの ``beforeFilter()`` メソッドで設定することもできます。これは関数の結果をコンポーネントのプロパティに設定する時に役に立ちます。
 上記の例は次のように書き換えられます。::
 
-    <?php
     public function beforeFilter() {
         $this->Auth->authorize = array('controller');
         $this->Auth->loginAction = array('controller' => 'users', 'action' => 'login');
@@ -53,15 +51,15 @@
 しかし、コンポーネントのオプションをコントローラの ``beforeFilter()`` が実行される前に設定することが可能な場合もあります。
 つまり、コンポーネントの中には ``$components`` 配列にオプションを設定することができるものがあります。::
 
-    <?php
-    public $components = array('DebugKit.Toolbar' => array('panels' => array('history', 'session')));
+    public $components = array(
+        'DebugKit.Toolbar' => array('panels' => array('history', 'session'))
+    );
 
 各コンポーネントがどのような設定オプションを提供しているかは関連ドキュメントを参照してください。
 
 共通設定の一つに ``className`` オプションがあります。このオプションを使うとコンポーネントに別名をつけられます。
 この機能は ``$this->Auth`` や他のコンポーネントの参照を独自実装に置き換えたい時に便利です。::
 
-    <?php
     // app/Controller/PostsController.php
     class PostsController extends AppController {
         public $components = array(
@@ -91,7 +89,6 @@
 仮に、 :php:class:`SessionComponent` と :php:class:`CookieComponent` をコントローラに読込んだ場合、
 以下のようにアクセスすることができます。::
 
-    <?php
     class PostsController extends AppController {
         public $components = array('Session', 'Cookie');
        
@@ -114,7 +111,6 @@
 このような状況では、実行時に :doc:`コンポーネントコレクション </core-libraries/collections>` を使ってコンポーネントを読込むことができます。 
 コントローラ内部から以下のようにできます。::
 
-    <?php
     $this->OneTimer = $this->Components->load('OneTimer');
     $this->OneTimer->getTime();
 
@@ -133,7 +129,7 @@
 はじめに、新しいコンポーネントファイルとクラスを作成します。 ``/app/Controller/Component/MathComponent.php`` にファイルを作成して下さい。
 コンポーネントの基本構造は以下のようになります。::
 
-    <?php
+    App::uses('Component', 'Controller');
     class MathComponent extends Component {
         public function doComplexOperation($amount1, $amount2) {
             return $amount1 + $amount2;
@@ -151,7 +147,6 @@
 コントローラはそのコンポーネントに由来する新しいプロパティを自動的に与えられるでしょう。
 そのプロパティを通してインスタンスにアクセスできます。::
 
-    <?php
     /* 標準の$this->Sessionと同様に新しいコンポーネントを $this->Math で利用できるようにします。*/
     public $components = array('Math', 'Session');
 
@@ -161,7 +156,6 @@
 コントローラの中でコンポーネントを読み込む時、コンポーネントのコンストラクタに渡すバラメータを宣言することもできます。
 このパラメータはコンポーネントによってハンドリングされます。::
 
-    <?php
     public $components = array(
         'Math' => array(
             'precision' => 2,
@@ -180,8 +174,8 @@
 作成中のコンポーネントから他のコンポーネントを読み込むことができ、その方法はコントローラから
 ``$components`` 変数を使って読み込む場合と同じです。::
 
-    <?php
     // app/Controller/Component/CustomComponent.php
+    App::uses('Component', 'Controller');
     class CustomComponent extends Component {
         // 実装中のコンポーネントが使っている他のコンポーネント
         public $components = array('Existing');
@@ -196,11 +190,8 @@
     }
 
     // app/Controller/Component/ExistingComponent.php
+    App::uses('Component', 'Controller');
     class ExistingComponent extends Component {
-
-        public function initialize(Controller $controller) {
-            $this->Parent->bar();
-        }
 
         public function foo() {
             // ...

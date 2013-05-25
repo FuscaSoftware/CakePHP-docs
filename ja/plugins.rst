@@ -26,13 +26,12 @@ CakePHP2.0 の変更点として、プラグインは app/Config/bootstrap.php �
 
 ::
 
-    <?php
-    CakePlugin::loadAll(); // 全て読み込み 
+    CakePlugin::loadAll(); // 全て読み込み
     CakePlugin::load('ContactManager'); //一つだけ読み込み
 
 
 設定で記述されたプラグインは、 loadAll ですべてのプラグインで利用できます。
-load() も同様の働きですが、明示的に指定したプラグインだけロードします。
+``load()`` も同様の働きですが、明示的に指定したプラグインだけロードします。
 
 プラグイン設定
 ==============
@@ -44,7 +43,6 @@ load() も同様の働きですが、明示的に指定したプラグインだ�
 
 ::
 
-    <?php
     CakePlugin::loadAll(array(
         'Blog' => array('routes' => true),
         'ContactManager' => array('bootstrap' => true),
@@ -60,7 +58,6 @@ load() も同様の働きですが、明示的に指定したプラグインだ�
 
 ::
 
-    <?php
     CakePlugin::loadAll(array(
         array('bootstrap' => true),
         'Blog' => array('routes' => true)
@@ -75,7 +72,7 @@ load() も同様の働きですが、明示的に指定したプラグインだ�
 
 ::
 
-    user@host$ cake schema create -plugin ContactManager
+    user@host$ cake schema create --plugin ContactManager
 
 ほとんどのプラグインで、設定するための正確な手続きとデータベースのセットアップするための方法が、ドキュメントに書かれています。
 他よりセットアップが必要なものもあります。
@@ -87,7 +84,6 @@ Advanced bootstrapping
 
 ::
 
-    <?php
     CakePlugin::loadAll(array(
         'Blog' => array(
             'bootstrap' => array(
@@ -100,8 +96,6 @@ Advanced bootstrapping
 読み込み済みプラグインが呼ばれるのに必要な関数を指定できます。
 
 ::
-
-    <?php
 
     function aCallableFunction($pluginName, $config) {
         
@@ -124,14 +118,12 @@ ContacktMangerプラグインのContactInfoHelperを使いたい場合、
 
 ::
 
-    <?php
     public $helpers = array('ContactManager.ContactInfo');
 
 すると、他のヘルパー同様に、ContactInfoHelperにアクセスできるようになります。
 
 ::
 
-    <?php
     echo $this->ContactInfo->address($contact);
 
 
@@ -178,14 +170,12 @@ ContacktMangerプラグインのContactInfoHelperを使いたい場合、
 
 ::
 
-    <?php
     // /app/Plugin/ContactManager/Controller/ContactManagerAppController.php:
     class ContactManagerAppController extends AppController {
     }
 
 ::
 
-    <?php
     // /app/Plugin/ContactManager/Model/ContactManagerAppModel.php:
     class ContactManagerAppModel extends AppModel {
     }
@@ -222,7 +212,6 @@ ContactManagerプラグインのコントローラーは、/app/Plugin/ContactMa
 
 ::
 
-    <?php
     // app/Plugin/ContactManager/Controller/ContactsController.php
     class ContactsController extends ContactManagerAppController {
         public $uses = array('ContactManager.Contact');
@@ -235,7 +224,7 @@ ContactManagerプラグインのコントローラーは、/app/Plugin/ContactMa
 
 .. note::
         このコントローラは、アプリケーションの AppController の親としてではなく、
-        プラグインのAppControllerを拡張します（ ContactManagerAppController という名前で）。
+        プラグインのAppControllerを継承します（ ContactManagerAppController という名前で）。
 
         また、モデルの名前の付け方は、プラグインの名前が接頭語としてつきます。
         これは、プラグイン内のモデルとメインのアプリケーション内のモデルの区別が必要だからです。
@@ -256,7 +245,6 @@ Contact model をまだ定義してないので、“Missing Model”エラー�
 
 ::
 
-    <?php
     // /app/Plugin/ContactManager/Model/Contact.php:
     class Contact extends ContactManagerAppModel {
     }
@@ -271,7 +259,6 @@ Contact model をまだ定義してないので、“Missing Model”エラー�
 
 ::
 
-    <?php
     // /app/Plugin/ContactManager/Model/Contact.php:
     class Contact extends ContactManagerAppModel {
         public $hasMany = array('ContactManager.AltName');
@@ -281,14 +268,13 @@ Contact model をまだ定義してないので、“Missing Model”エラー�
 
 ::
 
-    <?php
     // /app/Plugin/ContactManager/Model/Contact.php:
     class Contact extends ContactManagerAppModel {
-            public $hasMany = array(
-                    'AltName' => array(
-                            'className' => 'ContactManager.AltName'
-                    )
-            );
+        public $hasMany = array(
+            'AltName' => array(
+                'className' => 'ContactManager.AltName'
+            )
+        );
     }
 
 プラグインビュー
@@ -307,6 +293,7 @@ ContactManagerプラグインでは、ContactsController::index() actionのview�
     <!-- A sortable list of contacts would go here....-->
 
 .. note::
+
         プラグインからのエレメントの使い方に関する情報は、ここを参照してください。
         :ref:`view-elements`
 
@@ -344,6 +331,12 @@ Contacts controllerにはこのファイルを作ります。
 通常のwebrootと同じようにどのディレクトリにどんなファイルでも置くことができます。
 ただ制限として、 ``MediaView`` はそのアセットのmime-typeを知っておく必要があります。
 
+ただ、プラグインの静的アセットや画像やJavaScriptまたはCSSは、
+ディスパチャーを経由しますが、非常に効率が悪くなることを覚えておいてください。
+ですので、本番環境ではそれらにシンボリックリンクを張っておくことを強くおすすめします。
+例えばこのようにします。::
+
+    ln -s app/Plugin/YourPlugin/webroot/css/yourplugin.css app/webroot/css/yourplugin.css
 
 プラグイン内のアセットへのリンク
 --------------------------------
@@ -356,6 +349,10 @@ Contacts controllerにはこのファイルを作ります。
 .. note::
 
         アセットのパスの前に **/your_plugin/** に付けるのが重要です。魔法のようなことが起きます！
+
+.. versionchanged:: 2.1
+    アセットのリクエストには :term:`plugin syntax` を使用してください。View での利用方法:
+    <?php echo $this->Html->css("ContactManager.style"); ?>
 
 コンポーネント、ヘルパーとビヘイビア
 ====================================
@@ -372,7 +369,6 @@ Contacts controllerにはこのファイルを作ります。
 
 ::
 
-    <?php
     // Component defined in 'ContactManager' plugin
     class ExampleComponent extends Component {
     }
@@ -388,7 +384,6 @@ Contacts controllerにはこのファイルを作ります。
         Usesに定義する必要があります。
         ::
 
-                <?php
                 // Declare use of AppHelper for your Plugin's Helper
                 App::uses('AppHelper', 'View/Helper');
 

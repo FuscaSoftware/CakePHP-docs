@@ -1,91 +1,92 @@
-DataSources
-###########
+DataSources (Sources de Données)
+################################
 
-DataSources are the link between models and the source of data that
-models represent. In many cases, the data is retrieved from a
-relational database such as MySQL, PostgreSQL or MSSQL. CakePHP is
-distributed with several database-specific datasources (see the
-class files in ``lib/Cake/Model/Datasource/Database``), a summary
-of which is listed here for your convenience:
-
+Les Sources de données (DataSources) sont les liens entre les models et la 
+source de données qu'ils représentent. Dans de nombreux cas, les données 
+sont récupérées depuis une base de données relationnelle telle MySQL, 
+PostgreSQL ou MSSQL. CakePHP est distribué avec de nombreuses sources de 
+données spécifiques d'une base de données (voir les fichiers de classe 
+dans ``lib/Cake/Model/Datasource/Database``), un résumé de ceux-ci est listé 
+ici pour votre confort :
 
 - MySql
 - Postgres
 - Sqlite
 - Sqlserver
-- Oracle
 
 .. note::
 
-    You can find additional community contributed datasources in the 
-    `CakePHP DataSources repository at github <https://github.com/cakephp/datasources/tree/2.0>`_.
+    Vous pouvez trouver des sources de données de contribution de la communauté
+    supplémentaites dans le
+    `Dépôt de Sources de Données CakePHP sur github <https://github.com/cakephp/datasources/tree/2.0>`_.
 
-When specifying a database connection configuration in
-``app/Config/database.php``, CakePHP transparently uses the corresponding
-database datasource for all model operations. So, even though you might not have
-known about datasources, you've been using them all along.
+Quand vous spécifiez une configuration de connexion à une base de données 
+dans ``app/Config/database.php``, CakePHP utilise de manière transparente la 
+source de données correspondant à la base de données pour toutes les 
+opérations de model. Donc, même si vous pensiez ne rien connaître aux 
+sources de données, vous les utilisez tout le temps.
 
-All of the above sources derive from a base ``DboSource`` class, which
-aggregates some logic that is common to most relational databases. If you decide
-to write a RDBMS datasource, working from one of these (e.g. Mysql, or Sqlite is
-your best bet.)
+Toutes les sources ci-dessus dérivent d'une classe de base ``DboSource``, 
+qui agrège de la logique commune à la plupart des bases de données 
+relationnelles. Si vous décidez d'écrire une source de donnée RDBMS, 
+travailler à partir de l'une d'entre elles (par ex Mysql ou 
+Sqlite) est plus sûr.
 
-Most people, however, are interested in writing datasources for external sources
-of data, such as remote REST APIs or even an LDAP server. So that's what we're
-going to look at now.
+La plupart des gens cependant, sont intéressés par l'écriture de sources 
+de données pour des sources externes, telles les APIs REST distantes ou 
+même un serveur LDAP. C'est donc ce que nous allons voir maintenant.
 
 Basic API For DataSources
 =========================
 
-A datasource can, and *should* implement at least one of the
-following methods: ``create``, ``read``, ``update`` and/or
-``delete`` (the actual method signatures & implementation details
-are not important for the moment, and will be described later). You
-need not implement more of the methods listed above than necessary
-- if you need a read-only datasource, there's no reason to
-implement ``create``, ``update``, and ``delete``.
+Une source de données peut et *devrait* implémenter au moins l'une des méthodes 
+suivantes : ``create``, ``read``, ``update`` et/ou ``delete`` (les signatures 
+exactes de méthode et les détails d'implémentation ne sont pas importants 
+pour le moment, ils seront décrits plus tard). Vous n'êtes pas obligé 
+d'implémenter plus que nécessaire, parmi les méthodes listées ci-dessus - 
+si vous avez besoin d'une source de données en lecture seule, il n'y a 
+aucune raison d'implémenter ``create``, ``update`` et ``delete``.
 
-Methods that must be implemented for all CRUD methods:
+Méthodes qui doivent être implémentées pour toutes les méthodes CRUD:
 
 -  ``describe($Model)``
 -  ``listSources()``
 -  ``calculate($Model, $func, $params)``
--  At least one of:
+-  Au moins une des suivantes:
    
    -  ``create($Model, $fields = array(), $values = array())``
    -  ``read($Model, $queryData = array())``
    -  ``update($Model, $fields = array(), $values = array())``
    -  ``delete($Model, $conditions = null)``
 
-It is also possible (and sometimes quite useful) to define the
-``$_schema`` class attribute inside the datasource itself, instead
-of in the model.
+Il est possible également (et souvent très pratique), de définir 
+l'attribut de classe ``$_schema`` au sein de la source de données 
+elle-même, plutôt que dans le model.
 
-And that's pretty much all there is to it. By coupling this
-datasource to a model, you are then able to use
-``Model::find()/save()/delete()`` as you would normally, and the appropriate
-data and/or parameters used to call those methods will be passed on
-to the datasource itself, where you can decide to implement
-whichever features you need (e.g. Model::find options such as
-``'conditions'`` parsing, ``'limit'`` or even your own custom
-parameters).
+Et c'est à peu près tout ce qu'il y a dire ici. En couplant cette 
+source de données à un model, vous êtes alors en mesure d'utiliser 
+``Model::find()/save()/delete()``, comme vous le feriez normalement ;
+les données et/ou paramètres appropriés, utilisés pour appeler ces 
+méthodes, seront passés à la source de données elle-même, dans laquelle 
+vous pouvez décider d'implémenter toutes les fonctionnalités dont vous 
+avez besoin (par exemple les options de Model::find comme le parsing 
+``'conditions'``, ``'limit'`` ou même vos paramètres personnalisés).
 
-An Example
+Un Exemple
 ==========
 
-A common reason you would want to write your own datasource is when you would
-like to access a 3rd party API using the usual ``Model::find()/save()/delete()``
-methods. Let's write a datasource that will access a fictitious remote JSON
-based API. We'll call it ``FarAwaySource`` and we'll put it in
-``app/Model/Datasource/FarAwaySource.php``::
+Une des raisons pour laquelle vous voudriez écrire votre propre source de données
+pourrait être la volonté d'accéder à l'API d'une librairie tierce en utilisant
+les méthodes habituelles ``Model::find()/save()/delete()``. Ecrivons une source de 
+données qui va accéder à une API JSON distante et fictive. Nous allons l'appeler
+``FarAwaySource`` et nous allons la placer dans ``app/Model/Datasource/FarAwaySource.php``::
 
-    <?php
     App::uses('HttpSocket', 'Network/Http');
 
     class FarAwaySource extends DataSource {
 
     /**
-     * An optional description of your datasource
+     * Une description optionnelle de votre source de données
      */
         public $description = 'A far away datasource';
 
@@ -98,9 +99,9 @@ based API. We'll call it ``FarAwaySource`` and we'll put it in
         );
 
     /**
-     * If we want to create() or update() we need to specify the fields
-     * available. We use the same array keys as we do with CakeSchema, eg.
-     * fixtures and schema migrations.
+     * Si nous voulons create() ou update(), nous avons besoin de spécifier la 
+     * disponibilité des champs. Nous utilisons le même tableau indicé comme nous le faisions avec CakeSchema, par exemple
+     * fixtures et schema de migrations.
      */
         protected $_schema = array(
             'id' => array(
@@ -121,7 +122,7 @@ based API. We'll call it ``FarAwaySource`` and we'll put it in
         );
 
     /**
-     * Create our HttpSocket and handle any config tweaks.
+     * Créons notre HttpSocket et gérons any config tweaks.
      */
         public function __construct($config) {
             parent::__construct($config);
@@ -159,7 +160,7 @@ based API. We'll call it ``FarAwaySource`` and we'll put it in
      * We don't count the records here but return a string to be passed to
      * ``read()`` which will do the actual counting. The easiest way is to just
      * return the string 'COUNT' and check for it in ``read()`` where
-     * ``$data['fields'] == 'COUNT'``.
+     * ``$data['fields'] === 'COUNT'``.
      */
         public function calculate(Model $Model, $func, $params = array()) {
             return 'COUNT';
@@ -175,7 +176,7 @@ based API. We'll call it ``FarAwaySource`` and we'll put it in
              * other way to get the record count. Here we'll simply return 1 so
              * ``update()`` and ``delete()`` will assume the record exists.
              */
-            if ($data['fields'] == 'COUNT') {
+            if ($data['fields'] === 'COUNT') {
                 return array(array(array('count' => 1)));
             }
             /**
@@ -235,66 +236,62 @@ based API. We'll call it ``FarAwaySource`` and we'll put it in
 
     }
 
-We can then configure the datasource in our ``app/Config/database.php`` file
-by adding something like this::
+Nous pouvons à présent configurer la source de données dans notre fichier 
+``app/Config/database.php`` en y ajoutant quelque chose comme ceci::
 
-    <?php
     public $faraway = array(
         'datasource' => 'FarAwaySource',
         'apiKey'     => '1234abcd',
     );
 
-Then use the database config in our models like this::
+Et ensuite utiliser la configuration de notre source de données dans 
+nos models comme ceci::
 
-    <?php
     class MyModel extends AppModel {
         public $useDbConfig = 'faraway';
     }
 
-We can retrieve data from our remote source using the familiar model methods::
+Nous pouvons à présent récupérer les données depuis notre source distante 
+en utilisant les méthodes familières dans notre model::
 
-    <?php
     // Get all messages from 'Some Person'
     $messages = $this->MyModel->find('all', array(
         'conditions' => array('name' => 'Some Person'),
     ));
 
-Similarly we can save a new message::
+De la même façon, nous pouvons sauvegarder un nouveau message::
 
-    <?php
     $this->MyModel->save(array(
         'name' => 'Some Person',
         'message' => 'New Message',
     ));
 
-Update the previous message::
+Mettre à jour le précédent message::
 
-    <?php
     $this->MyModel->id = 42;
     $this->MyModel->save(array(
         'message' => 'Updated message',
     ));
 
-And delete the message::
+Et supprimer le message::
 
-    <?php
     $this->MyModel->delete(42);
 
-Plugin DataSources
-==================
+Plugin de source de données
+===========================
 
-You can also package Datasources into plugins.
+Vous pouvez également empaqueter vos source de données dans des plugins.
 
-Simply place your datasource file into
-``Plugin/[YourPlugin]/Model/Datasource/[YourSource].php``
-and refer to it using the plugin notation::
+Placez simplement votre fichier de source de données à l'intérieur de 
+``Plugin/[YourPlugin]/Model/Datasource/[YourSource].php`` et faites
+y référence en utilisant la syntaxe pour les plugins::
 
-    <?php
     public $faraway = array(
         'datasource' => 'MyPlugin.FarAwaySource',
         'apiKey'     => 'abcd1234',
     );
 
+
 .. meta::
-    :title lang=en: DataSources
-    :keywords lang=en: array values,model fields,connection configuration,implementation details,relational databases,best bet,mysql postgresql,sqlite,external sources,ldap server,database connection,rdbms,sqlserver,postgres,relational database,mssql,aggregates,apis,repository,signatures
+    :title lang=fr: DataSources (Sources de Données)
+    :keywords lang=fr: array values,model fields,connection configuration,implementation details,relational databases,best bet,mysql postgresql,sqlite,external sources,ldap server,database connection,rdbms,sqlserver,postgres,relational database,mssql,aggregates,apis,repository,signatures

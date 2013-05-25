@@ -29,7 +29,7 @@ master_doc = 'contents'
 
 # General information about the project.
 project = u'CakePHP Cookbook'
-copyright = u'2012, Cake Software Foundation, Inc'
+copyright = u'2013, Cake Software Foundation, Inc'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -71,7 +71,7 @@ pygments_style = 'sphinx'
 # A list of ignored prefixes for module index sorting.
 #modindex_common_prefix = []
 
-highlight_language = 'php'
+highlight_language = 'phpinline'
 
 
 # -- Options for HTML output ---------------------------------------------------
@@ -120,7 +120,7 @@ html_static_path = []
 
 # Custom sidebar templates, maps document names to template names.
 html_sidebars = {
- '**' : ['globaltoc.html']
+ '**' : ['globaltoc.html', 'localtoc.html']
 }
 
 # Additional templates that should be rendered to pages, maps page names to
@@ -240,7 +240,7 @@ man_pages = [
 epub_title = u'CakePHP Cookbook'
 epub_author = u'Cake Software Foundation, Inc.'
 epub_publisher = u'Cake Software Foundation, Inc.'
-epub_copyright = u'2012, Cake Software Foundation, Inc.'
+epub_copyright = u'2013, Cake Software Foundation, Inc.'
 
 epub_theme = 'cakephp-epub'
 
@@ -281,3 +281,9 @@ epub_tocdup = False
 
 # Languages available.
 languages = ['en', 'pt', 'es', 'ja', 'ru', 'fr']
+
+# Hack to render the php source code without the <?php tag
+from sphinx.highlighting import lexers
+from pygments.lexers.web import PhpLexer
+
+lexers['phpinline'] = PhpLexer(startinline=True)

@@ -6,6 +6,9 @@ Les développeurs de Cake vont utiliser les normes de code suivantes.
 Il est recommandé que les autres personnes qui développent des IngredientsCake 
 suivent les mêmes normes.
 
+Vous pouvez utilisez le `CakePHP Code Sniffer
+<https://github.com/cakephp/cakephp-codesniffer>`_ pour vérifier que votre code suit les normes requises.
+
 Ajout de nouvelles fonctionnalités
 ==================================
 
@@ -19,7 +22,6 @@ Un onglet sera utilisé pour l'indentation.
 
 Alors, l'indentation devrait ressembler à cela::
 
-    <?php
     // niveau de base
         // niveau 1
             // niveau 2
@@ -28,7 +30,6 @@ Alors, l'indentation devrait ressembler à cela::
 
 Ou::
 
-    <?php
     $booleanVariable = true;
     $stringVariable = "moose";
     if ($booleanVariable) {
@@ -65,9 +66,10 @@ Les structures de controle sont par exemple "``if``", "``for``", "``foreach``",
    lignes, et ils devraient avoir le même niveau d'indentation que la structure 
    de contrôle. La déclaration inclue dans les accolades doit commencer sur une
    nouvelle ligne, et le code qu'il contient doit gagner un nouveau niveau 
-   d'indentation::
+   d'indentation.
+   
+::
 
-    <?php 
     // wrong = pas de parenthèses, déclaration mal placée
     if (expr) statement; 
 
@@ -89,12 +91,31 @@ ligne. Les opérateurs ternaires plus longues doivent être séparées en expres
 parenthèses optionnelles peuvent être utilisées autour de la condition vérifiée 
 de l'opération pour clarifier::
 
-    <?php
     //Bien, simple et lisible
     $variable = isset($options['variable']) ? $options['variable'] : true;
 
     //Imbriquations des ternaires est mauvaise
     $variable = isset($options['variable']) ? isset($options['othervar']) ? true : false : false;
+
+
+View files
+----------
+
+Dans les fichiers de vue (fichiers .ctp) les développeurs devront utiliser 
+les structures de contrôle en mot (keyword control structures).
+Les structures de contrôle en môt sont plus faciles à lire dans des fichiers 
+de vue complexes. Les structures de contrôle peuvent soit être contenues dans 
+un block PHP plus large, soit dans des tags PHP séparés::
+
+    <?php
+    if ($isAdmin):
+        echo "<p>You are the admin user.</p>";
+    endif;
+    ?>
+    <p>The following is also acceptable:</p>
+    <?php if ($isAdmin): ?>
+        <p>You are the admin user.</p>
+    <?php endif; ?>
 
 Appels des fonctions
 ====================
@@ -168,7 +189,6 @@ Les tags de PhpDoc sont un peu du même style que les tags de JavaDoc dans Java.
 Les Tags sont seulement traités si ils sont la première chose dans la ligne 
 DocBlock, par exemple::
 
-    <?php
     /**
      * Exemple de Tag.
      * @author ce tag est analysé, mais @version est ignoré
@@ -215,7 +235,6 @@ Fonctions
 
 Ecrivez toutes les fonctions en camelBack::
 
-    <?php
     function nomDeFonctionLong() {
     }
 
@@ -224,7 +243,6 @@ Classes
 
 Les noms de classe doivent être écrites en CamelCase, par exemple::
 
-    <?php
     class ClasseExemple {
     }
 
@@ -238,7 +256,6 @@ de mots multiples. Les variables contenant des objets doivent démarrer
 avec une majuscule, et d'une certaine manière être associées à la classe d'où 
 elles proviennent. Exemple::
 
-    <?php
     $user = 'John';
     $users = array('John', 'Hans', 'Arne');
 
@@ -251,7 +268,6 @@ Utilisez les mots-clés private et protected de PHP5 pour les méthodes et
 variables. De plus les noms des méthodes et variables protégées commencent 
 avec un underscore simple ("\_"). Exemple::
 
-    <?php
     class A {
         protected $_jeSuisUneVariableProtegee;
 
@@ -263,7 +279,6 @@ avec un underscore simple ("\_"). Exemple::
 Les noms de méthodes et variables privées commencent avec un underscore double 
 ("\_\_"). Exemple::
 
-    <?php
     class A {
         private $__iAmAPrivateVariable;
 
@@ -278,7 +293,6 @@ Chaînage des méthodes
 Le chaînage des méthodes doit avoir des méthodes multiples réparties dans des 
 lignes distinctes, et indentées avec une tabulation::
 
-    <?php
     $email->from('foo@example.com')
         ->to('bar@example.com')
         ->subject('Un super message')
@@ -302,6 +316,7 @@ Fichiers
 
 Les noms de fichier qui ne contiennent pas de classes, doivent être écrits en 
 minuscules et soulignés, par exemple:
+
 ::
 
     nom_de_fichier_long.php
@@ -339,7 +354,6 @@ Les constantes doivent être définies en majuscules:
 
 ::
 
-    <?php
     define('CONSTANTE', 1);
 
 Si un nom de constante a plusieurs mots, ils doivent être séparés par un 
@@ -347,7 +361,6 @@ caractère underscore, par exemple:
 
 ::
 
-    <?php
     define('NOM_LONG_DE_CONSTANTE', 2);
 
 

@@ -33,7 +33,6 @@
 また、 XML/JSON データをコントローラへ POST した場合、自動的に解析され ``$this->request->data`` の配列に割り当てられ、モデルデータとして保存可能です。
 リクエストハンドラを利用するためには $components の配列に含めてください。::
 
-    <?php
     class WidgetController extends AppController {
 
         public $components = array('RequestHandler');
@@ -68,7 +67,6 @@
     null の場合、クライアントが受付けるコンテンツタイプをすべて配列で返します。
     例::
 
-        <?php
         class PostsController extends AppController {
 
             public $components = array('RequestHandler');
@@ -124,7 +122,7 @@
     モバイルブラウザの User Agent 文字列は:
 
     -  Android
-    -  AvantGo 
+    -  AvantGo
     -  BlackBerry
     -  DoCoMo
     -  Fennec
@@ -170,7 +168,6 @@
 しかし、非 Ajax リクエストのときは反対にキャッシュを許可したいと思います。
 そのようなときは次のようにします。::
 
-        <?php
         if ($this->request->is('ajax')) {
             $this->disableCache();
         }
@@ -219,7 +216,6 @@
     コールバックはリクエストの入力に含まれるデータの配列を返す必要があります。
     たとえば、コントローラの beforeFilter に CSV ハンドラを追加する場合::
 
-        <?php
         $parser = function ($data) {
             $rows = str_getcsv($data, "\n");
             foreach ($rows as &$row) {
@@ -239,7 +235,6 @@
     しかしながら、ハンドラの関数としては、どの `callable <http://php.net/callback>`_ も利用できます。
     コールバックにはどのような引数を渡すこともでき、これは ``json_decode`` のようなコールバックのときに便利です::
 
-        <?php
         $this->RequestHandler->addInputType('json', array('json_decode', true));
 
     ..
@@ -424,8 +419,39 @@ HTTP キャッシュバリデーションモデルは、クライアントへの
 
 自動的なチェックは、 ``checkHttpCache`` を false にすることで行わないようにすることができます。::
 
-    <?php
-    public components = array(
+    public $components = array(
         'RequestHandler' => array(
             'checkHttpCache' => false
+    ));
+
+カスタム ViewClasses の利用
+=============================
+
+.. versionadded:: 2.3
+
+..
+    When using JsonView/XmlView you might want to override the default serialization
+    with a custom View class, or add View classes for other types.
+
+    You can map existing and new types to your custom classes.
+
+JsonView/XmlView を利用する場合、カスタムビュークラスの優先順位をデフォルトの順番から上書きしたり、独自のカスタムクラスを追加したい場合があるでしょう。
+
+その場合、既存のタイプや新規タイプのクラスをマッピングすることができます。
+
+
+.. php:method:: viewClassMap($type, $viewClass)
+
+    :param string|array $type: タイプ名の文字列または配列 ``array('json' => 'MyJson')`` のフォーマット
+    :param string $viewClass: ``View`` を取り除いたビュークラス名
+
+``viewClassMap`` を使って、自動的にセットすることも可能です。 ::
+
+    public $components = array(
+        'RequestHandler' => array(
+            'viewClassMap' => array(
+                'json' => 'ApiKit.MyJson',
+                'xml' => 'ApiKit.MyXml',
+                'csv' => 'ApiKit.Csv'
+            )
     ));

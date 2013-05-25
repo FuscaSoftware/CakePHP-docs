@@ -57,12 +57,12 @@ table is being dropped or created and another for errors. Examples::
 
 Adding data to a posts table for example would like this::
 
-    <?php
     App::uses('Post', 'Model');
     public function after($event = array()) {
         if (isset($event['create'])) {
             switch ($event['create']) {
                 case 'posts':
+                    App::uses('ClassRegistry', 'Utility');
                     $post = ClassRegistry::init('Post');
                     $post->create();
                     $post->save(
@@ -82,7 +82,6 @@ When inserting data to more than one table you'll need to flush the database
 cache after each table is created. Cache can be disable by setting
 ``$db->cacheSources = false`` in the before action(). ::
 
-    <?php
     public $connection = 'default';
 
     public function before($event = array()) {
